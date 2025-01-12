@@ -1,0 +1,42 @@
+name: Convert Draw.io to PDF
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Permet un déclenchement manuel
+
+jobs:
+  convert-to-pdf:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Étape 1 : Vérification du code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Étape 2 : Configuration de l'environnement
+      - name: Setup dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget x11-apps
+
+      # Étape 3 : Téléchargement et exécution de Draw.io CLI
+      - name: Install Draw.io CLI
+        run: |
+          wget https://github.com/jgraph/drawio-desktop/releases/download/v21.0.1/drawio-amd64-21.0.1.deb
+          sudo dpkg -i drawio-amd64-21.0.1.deb || sudo apt-get -f install -y
+
+      # Étape 4 : Conversion du fichier .drawio en PDF
+      - name: Convert Draw.io to PDF
+        run: |
+          mkdir -p output
+          drawio --export --format pdf --output output/diagramme.pdf SOC.drawio
+
+      # Étape 5 : Upload du fichier PDF comme artefact
+      - name: Upload PDF
+        uses: actions/upload-artifact@v3
+        with:
+          name: Converted-PDF
+          path: output/diagramme.pdf
+
