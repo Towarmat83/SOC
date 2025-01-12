@@ -15,23 +15,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Étape 2 : Configuration de l'environnement
-      - name: Setup dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget x11-apps
+      # Étape 2 : Configuration de Node.js pour utiliser drawio-batch
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
 
-      # Étape 3 : Téléchargement et exécution de Draw.io CLI
-      - name: Install Draw.io CLI
+      # Étape 3 : Installation de drawio-batch
+      - name: Install drawio-batch
         run: |
-          wget https://github.com/jgraph/drawio-desktop/releases/download/v26.0.4/drawio-amd64-26.0.4.deb
-          sudo dpkg -i drawio-amd64-26.0.4.deb || sudo apt-get -f install -y
+          npm install -g @rlespinasse/drawio-batch
 
       # Étape 4 : Conversion du fichier .drawio en PDF
       - name: Convert Draw.io to PDF
         run: |
           mkdir -p output
-          drawio --export --format pdf --output output/diagramme.pdf SOC.drawio
+          drawio-batch --export SOC.drawio --output output/diagramme.pdf --format pdf
 
       # Étape 5 : Upload du fichier PDF comme artefact
       - name: Upload PDF
@@ -39,4 +38,3 @@ jobs:
         with:
           name: Converted-PDF
           path: output/diagramme.pdf
-
