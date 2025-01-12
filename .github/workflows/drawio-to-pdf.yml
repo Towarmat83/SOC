@@ -25,7 +25,7 @@ jobs:
       - name: Install Draw.io CLI
         run: |
           wget https://github.com/jgraph/drawio-desktop/releases/download/v26.0.4/drawio-amd64-26.0.4.deb
-          sudo dpkg -i drawio-amd64-21.0.1.deb || sudo apt-get -f install -y
+          sudo dpkg -i drawio-amd64-26.0.4.deb || sudo apt-get -f install -y
 
       # Étape 4 : Conversion du fichier .drawio en PDF
       - name: Convert Draw.io to PDF
